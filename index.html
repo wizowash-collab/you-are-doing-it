@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You Are Doing It!!</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDKs for browser -->
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 You Are Doing It!!</h1>
+    <p id="dailyQuote" class="quote"></p>
+    <p id="todayDate" class="date"></p>
+
+    <div id="goal-form">
+      <input type="text" id="goalInput" placeholder="Enter a goal..." />
+      <button onclick="addGoal()">Add Goal</button>
+    </div>
+
+    <table id="goalTable">
+      <thead>
+        <tr>
+          <th>Goal</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="goalRows"></tbody>
+    </table>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

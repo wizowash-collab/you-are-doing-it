@@ -1,0 +1,77 @@
+body {
+  font-family: sans-serif;
+  background: #f0f8ff;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h1 {
+  text-align: center;
+  color: green;
+}
+
+.quote {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.date {
+  text-align: center;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+#goal-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input, select, textarea {
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px;
+  font-size: 14px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: darkgreen;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+}
