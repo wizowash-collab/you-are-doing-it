@@ -10,21 +10,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const auth = firebase.auth();
-let currentUser = null;
 const today = new Date().toISOString().split("T")[0];
-
-// ✅ Sign in anonymously and start app
-auth.signInAnonymously()
-  .then(() => {
-    currentUser = auth.currentUser;
-    showDailyQuote();
-    loadGoals();
-    document.getElementById("goalInput").focus();
-  })
-  .catch(error => {
-    console.error("Authentication error:", error);
-  });
 
 // ✅ Style dropdown based on value
 function styleStatusDropdown(select) {
@@ -33,13 +19,13 @@ function styleStatusDropdown(select) {
   select.style.color = "";
 
   if (value === 0) {
-    select.style.backgroundColor = "#e74c3c";
+    select.style.backgroundColor = "#e74c3c"; // red
     select.style.color = "white";
   } else if (value === 50) {
-    select.style.backgroundColor = "#f1c40f";
+    select.style.backgroundColor = "#f1c40f"; // yellow
     select.style.color = "black";
   } else if (value === 100) {
-    select.style.backgroundColor = "#2ecc71";
+    select.style.backgroundColor = "#2ecc71"; // light green
     select.style.color = "black";
   }
 }
@@ -47,10 +33,9 @@ function styleStatusDropdown(select) {
 function addGoal() {
   const input = document.getElementById("goalInput");
   const goalText = input.value.trim();
-  if (!goalText || !currentUser) return;
+  if (!goalText) return;
 
   db.collection("goals").add({
-    userId: currentUser.uid,
     text: goalText,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   }).then(() => {
@@ -62,94 +47,84 @@ function addGoal() {
 
 function loadGoals() {
   const tableBody = document.getElementById("goalRows");
-  if (!currentUser) return;
+  db.collection("goals").orderBy("createdAt").onSnapshot(snapshot => {
+    tableBody.innerHTML = "";
 
-  db.collection("goals")
-    .where("userId", "==", currentUser.uid)
-    .orderBy("createdAt")
-    .onSnapshot(snapshot => {
-      tableBody.innerHTML = "";
+    if (snapshot.empty) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 3;
+      td.textContent = "No goals yet. Add one to begin your journey!";
+      td.style.textAlign = "center";
+      td.style.color = "#888";
+      tr.appendChild(td);
+      tableBody.appendChild(tr);
+      return;
+    }
 
-      if (snapshot.empty) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 3;
-        td.textContent = "No goals yet. Add one to begin your journey!";
-        td.style.textAlign = "center";
-        td.style.color = "#888";
-        tr.appendChild(td);
-        tableBody.appendChild(tr);
-        return;
-      }
+    snapshot.forEach(doc => {
+      const goal = doc.data();
+      const goalId = doc.id;
 
-      snapshot.forEach(doc => {
-        const goal = doc.data();
-        const goalId = doc.id;
+      const tr = document.createElement("tr");
 
-        const tr = document.createElement("tr");
+      const tdGoal = document.createElement("td");
+      tdGoal.textContent = goal.text;
 
-        const tdGoal = document.createElement("td");
-        tdGoal.textContent = goal.text;
-
-        const tdStatus = document.createElement("td");
-        const select = document.createElement("select");
-        [0, 50, 100].forEach(val => {
-          const option = document.createElement("option");
-          option.value = val;
-          option.textContent = `${val}%`;
-          select.appendChild(option);
-        });
-        styleStatusDropdown(select);
-
-        select.onchange = () => {
-          styleStatusDropdown(select);
-          saveDailyEntry(goalId, select.value, noteInput.value);
-        };
-        tdStatus.appendChild(select);
-
-        const tdNote = document.createElement("td");
-        const noteInput = document.createElement("textarea");
-        noteInput.rows = 2;
-        noteInput.placeholder = "Add note...";
-        noteInput.onblur = () => {
-          saveDailyEntry(goalId, select.value, noteInput.value);
-        };
-        tdNote.appendChild(noteInput);
-
-        tr.appendChild(tdGoal);
-        tr.appendChild(tdStatus);
-        tr.appendChild(tdNote);
-        tableBody.appendChild(tr);
-
-        db.collection("dailyEntries")
-          .where("userId", "==", currentUser.uid)
-          .where("goalId", "==", goalId)
-          .where("date", "==", today)
-          .get()
-          .then(querySnapshot => {
-            querySnapshot.forEach(entryDoc => {
-              const entry = entryDoc.data();
-              select.value = entry.progress;
-              noteInput.value = entry.note;
-              styleStatusDropdown(select);
-            });
-          });
+      const tdStatus = document.createElement("td");
+      const select = document.createElement("select");
+      [0, 50, 100].forEach(val => {
+        const option = document.createElement("option");
+        option.value = val;
+        option.textContent = `${val}%`;
+        select.appendChild(option);
       });
+      styleStatusDropdown(select);
+
+      select.onchange = () => {
+        styleStatusDropdown(select);
+        saveDailyEntry(goalId, select.value, noteInput.value);
+      };
+      tdStatus.appendChild(select);
+
+      const tdNote = document.createElement("td");
+      const noteInput = document.createElement("textarea");
+      noteInput.rows = 2;
+      noteInput.placeholder = "Add note...";
+      noteInput.onblur = () => {
+        saveDailyEntry(goalId, select.value, noteInput.value);
+      };
+      tdNote.appendChild(noteInput);
+
+      tr.appendChild(tdGoal);
+      tr.appendChild(tdStatus);
+      tr.appendChild(tdNote);
+      tableBody.appendChild(tr);
+
+      db.collection("dailyEntries")
+        .where("goalId", "==", goalId)
+        .where("date", "==", today)
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(entryDoc => {
+            const entry = entryDoc.data();
+            select.value = entry.progress;
+            noteInput.value = entry.note;
+            styleStatusDropdown(select);
+          });
+        });
     });
+  });
 }
 
 function saveDailyEntry(goalId, progress, note) {
-  if (!currentUser) return;
-
   const entryRef = db.collection("dailyEntries")
-    .where("userId", "==", currentUser.uid)
     .where("goalId", "==", goalId)
     .where("date", "==", today);
 
   entryRef.get().then(snapshot => {
     if (snapshot.empty) {
       db.collection("dailyEntries").add({
-        userId: currentUser.uid,
         goalId,
         date: today,
         progress: parseInt(progress),
@@ -166,12 +141,15 @@ function saveDailyEntry(goalId, progress, note) {
   });
 }
 
+// ✅ Show daily inspirational quote
 function showDailyQuote() {
   const quote = "New day, fresh start. You are capable of amazing things.";
   document.getElementById("dailyQuote").textContent = quote;
-
-  const date = new Date();
-  const options = { month: "long", day: "numeric", year: "numeric" };
-  const formattedDate = date.toLocaleDateString("en-US", options);
-  document.getElementById("todayDate").textContent = `Today is ${formattedDate}`;
 }
+
+window.onload = () => {
+  document.getElementById("goalInput").focus();
+  showDailyQuote();
+};
+
+loadGoals();
