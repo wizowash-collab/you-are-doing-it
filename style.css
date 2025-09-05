@@ -1,77 +1,56 @@
-body {
-  font-family: sans-serif;
-  background: #f0f8ff;
+/* Ensure layout fits all screen sizes */
+* {
+  box-sizing: border-box;
   margin: 0;
-  padding: 20px;
+  padding: 0;
 }
 
-.container {
-  max-width: 700px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+body {
+  font-family: system-ui, sans-serif;
+  padding: 1rem;
+  background-color: #f0f4f8;
 }
 
-h1 {
-  text-align: center;
-  color: green;
-}
-
-.quote {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.date {
-  text-align: center;
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-#goal-form {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-input, select, textarea {
-  padding: 8px;
-  font-size: 14px;
-}
-
-button {
-  padding: 10px;
-  font-size: 14px;
-  background: green;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: darkgreen;
-}
-
-table {
+/* Container prevents overflow */
+.table-container {
   width: 100%;
-  border-collapse: collapse;
-  display: block;
   overflow-x: auto;
 }
 
-th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: left;
+/* Responsive table layout */
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(0.8rem, 2vw, 1rem); /* Fluid text size */
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-textarea {
-  width: 100%;
-  resize: vertical;
+/* Table headers and cells */
+.responsive-table th,
+.responsive-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+/* Notes column wraps text */
+.responsive-table td:nth-child(3) {
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* Zebra stripes for clarity */
+.responsive-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Rounded corners on first and last row */
+.responsive-table thead tr:first-child th:first-child {
+  border-top-left-radius: 8px;
+}
+.responsive-table thead tr:first-child th:last-child {
+  border-top-right-radius: 8px;
 }

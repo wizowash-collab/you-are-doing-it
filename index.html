@@ -3,37 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You Are Doing It!!</title>
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth-compat.js"></script>
+  <title>Responsive Goal Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>🎯 You Are Doing It!!</h1>
-    <p id="dailyQuote" class="quote"></p>
-    <p id="todayDate" class="date"></p>
-
-    <div id="goal-form">
-      <input type="text" id="goalInput" placeholder="Enter a goal..." />
-      <button onclick="addGoal()">Add Goal</button>
-    </div>
-
-    <table id="goalTable">
+  <div class="table-container">
+    <table class="responsive-table">
       <thead>
         <tr>
           <th>Goal</th>
-          <th>Status</th>
+          <th>Progress</th>
           <th>Notes</th>
         </tr>
       </thead>
-      <tbody id="goalRows"></tbody>
+      <tbody>
+        <tr>
+          <td>Daily Walk</td>
+          <td>75%</td>
+          <td>Felt great today! 🏃‍♂️</td>
+        </tr>
+        <tr>
+          <td>Sleep</td>
+          <td>60%</td>
+          <td>Need to wind down earlier. 😴</td>
+        </tr>
+        <tr>
+          <td>Hydration</td>
+          <td>90%</td>
+          <td>Crushed it! 💧</td>
+        </tr>
+        <tr>
+          <td>Mindfulness</td>
+          <td>40%</td>
+          <td>Skipped today, but tomorrow’s a fresh start. 🌱</td>
+        </tr>
+      </tbody>
     </table>
   </div>
-
-  <script src="app.js"></script>
 </body>
 </html>
