@@ -145,11 +145,11 @@ function saveDailyEntry(goalId, progress, note) {
 function showDailyQuote() {
   const quote = "New day, fresh start. You are capable of amazing things.";
   document.getElementById("dailyQuote").textContent = quote;
+
+  const date = new Date();
+  const options = { month: "long", day: "numeric", year: "numeric" };
+  const formattedDate = date.toLocaleDateString("en-US", options);
+
+  document.getElementById("todayDate").textContent = `Today is ${formattedDate}`;
 }
-
-window.onload = () => {
-  document.getElementById("goalInput").focus();
-  showDailyQuote();
-};
-
 loadGoals();
